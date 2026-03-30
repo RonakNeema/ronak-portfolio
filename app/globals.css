@@ -1,8 +1,12 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0d0d0d;
+  --foreground: #e0e0e0;
+  --accent: #22d3d3;
+  --accent-green: #4ade80;
+  --card-bg: #1a1a1a;
+  --card-border: #2a2a2a;
 }
 
 @theme inline {
@@ -12,15 +16,225 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
 }
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Scroll animations */
+.animate-in {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.animate-in.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.animate-in-left {
+  opacity: 0;
+  transform: translateX(-30px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.animate-in-left.show {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.animate-in-right {
+  opacity: 0;
+  transform: translateX(30px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.animate-in-right.show {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Glassmorphism effect */
+.glass {
+  backdrop-filter: blur(10px) saturate(180%);
+  -webkit-backdrop-filter: blur(10px) saturate(180%);
+}
+
+/* Gradient text effect */
+.gradient-text {
+  background: linear-gradient(135deg, currentColor 0%, currentColor 50%, rgba(255,255,255,0.6) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Hover card effect */
+.card-hover {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* Touch-friendly buttons */
+@media (max-width: 768px) {
+  button, a {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* ==================== STANDARDIZED BUTTON & ICON STYLES ==================== */
+
+/* Primary Button - Main CTA buttons */
+.btn-primary {
+  @apply px-6 py-3 rounded-xl font-semibold transition-all duration-300;
+  @apply hover:scale-105 active:scale-95;
+  @apply flex items-center justify-center gap-2;
+  @apply min-h-[44px];
+}
+
+.btn-primary.dark {
+  @apply bg-cyan-600 text-white hover:bg-cyan-500;
+  @apply shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40;
+}
+
+.btn-primary.light {
+  @apply bg-[#4a3728] text-white hover:bg-[#5c4433];
+  @apply shadow-lg shadow-[#4a3728]/25 hover:shadow-[#4a3728]/40;
+}
+
+/* Secondary Button - Tab buttons, secondary actions */
+.btn-secondary {
+  @apply px-5 py-2.5 rounded-lg font-medium transition-all duration-300;
+  @apply hover:scale-105 active:scale-95;
+  @apply flex items-center justify-center gap-2;
+  @apply min-h-[44px];
+}
+
+.btn-secondary.dark {
+  @apply bg-gray-700/50 text-white hover:bg-gray-600/50;
+}
+
+.btn-secondary.light {
+  @apply bg-[#d5c2af]/50 text-[#4a3728] hover:bg-[#c1a388]/50;
+}
+
+/* Icon Button - Social icons, nav toggles */
+.btn-icon {
+  @apply p-2.5 rounded-xl transition-all duration-300;
+  @apply hover:scale-110 active:scale-95;
+  @apply flex items-center justify-center;
+  @apply min-h-[44px] min-w-[44px];
+}
+
+.btn-icon.dark {
+  @apply text-white hover:text-cyan-400 hover:bg-cyan-500/10;
+}
+
+.btn-icon.light {
+  @apply text-[#4a3728] hover:text-[#6b5344] hover:bg-[#4a3728]/10;
+}
+
+/* Icon Container - Icons with background (skills, etc) */
+.icon-container {
+  @apply p-3 rounded-xl transition-all duration-300;
+}
+
+.icon-container.dark {
+  @apply bg-cyan-600/20 text-cyan-400;
+}
+
+.icon-container.light {
+  @apply bg-[#4a3728]/15 text-[#4a3728];
+}
+
+/* Tag/Pill Style - Skill tags, badges */
+.tag {
+  @apply px-3 py-1.5 rounded-full text-xs font-medium;
+  @apply hover:scale-105 transition-all duration-200 cursor-default;
+}
+
+.tag.dark {
+  @apply bg-gray-700/50 text-gray-300 border border-gray-600/50 hover:border-cyan-500/50 hover:text-cyan-300;
+}
+
+.tag.light {
+  @apply bg-[#d5c2af]/60 text-[#4a3728] border border-[#c1a388]/50;
+}
+
+/* Card Style - Consistent card styling */
+.card {
+  @apply rounded-xl border-2 transition-all duration-300;
+}
+
+.card.dark {
+  @apply bg-gray-800/50 border-gray-600/50 hover:border-cyan-500/30;
+}
+
+.card.light {
+  @apply bg-[#eae0d7]/60 border-[#c1a388]/50;
+}
+
+/* Tab Button - Active/Inactive tabs */
+.tab-btn {
+  @apply px-6 py-3 rounded-lg font-medium text-sm md:text-base;
+  @apply transition-all duration-300 flex items-center gap-2 min-h-[44px];
+}
+
+.tab-btn.active.dark {
+  @apply bg-cyan-600 text-white shadow-lg shadow-cyan-500/25;
+}
+
+.tab-btn.active.light {
+  @apply bg-[#4a3728] text-white shadow-lg shadow-[#4a3728]/25;
+}
+
+.tab-btn.inactive.dark {
+  @apply text-gray-400 hover:text-cyan-400 hover:bg-gray-700/30;
+}
+
+.tab-btn.inactive.light {
+  @apply text-[#5c4433] hover:text-[#4a3728] hover:bg-[#c1a388]/30;
+}
+
+/* Link Style - Text links */
+.link {
+  @apply transition-all duration-200 underline-offset-4;
+}
+
+.link.dark {
+  @apply text-cyan-400 hover:text-cyan-300 hover:underline;
+}
+
+.link.light {
+  @apply text-[#4a3728] hover:text-[#6b5344] hover:underline;
+}
+
+/* Animated gradient background */
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animated-gradient {
+  background-size: 200% 200%;
+  animation: gradient-shift 15s ease infinite;
+}
+
