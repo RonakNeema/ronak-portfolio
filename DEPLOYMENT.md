@@ -31,7 +31,7 @@ git add .
 git commit -m "Initial commit: Terminal-style portfolio with 8 features"
 
 # Add remote (replace YOUR_USERNAME with your GitHub username)
-git remote add origin https://github.com/YOUR_USERNAME/ronak-portfolio.git
+git remote add origin https://github.com/RonakNeema/ronak-portfolio.git
 
 # Push to main branch
 git branch -M main

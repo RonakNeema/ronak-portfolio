@@ -222,17 +222,36 @@ export default function Hero() {
             <span className="ml-2 text-gray-500 text-xs">bio.sh</span>
           </div>
           <div className="text-gray-300 leading-relaxed min-h-[3rem]">
-            {typedLines.map((line, idx) => (
-              <div key={idx}>
-                <span className="text-gray-500">{line.startsWith('//') ? '// ' : ''}</span>
-                <span className={line.includes('Passionate') || line.includes('code') ? 'text-cyan-400' : ''}>
-                  {line.replace('// ', '').replace('coffee', '').replace('code', '')}
-                </span>
-                {line.includes('coffee') && <span className="text-green-400">coffee</span>}
-                {line.includes('code') && <span className="text-cyan-400"> code</span>}
-                {line.includes('2019') && ' since 2019.'}
-              </div>
-            ))}
+            {typedLines.map((line, idx) => {
+              if (idx === 0) {
+                // First line: "// Passionate engineer building scalable systems."
+                return (
+                  <div key={idx}>
+                    <span className="text-gray-500">// </span>
+                    <span className="text-cyan-400">Passionate engineer</span>
+                    <span> building scalable systems.</span>
+                  </div>
+                );
+              } else if (idx === 1) {
+                // Second line: "// Turning coffee into code since 2019."
+                const text = line;
+                const beforeCoffee = text.substring(0, text.indexOf('coffee'));
+                const afterCoffee = text.substring(text.indexOf('coffee') + 6, text.indexOf('code'));
+                const afterCode = text.substring(text.indexOf('code') + 4);
+                
+                return (
+                  <div key={idx}>
+                    <span className="text-gray-500">// </span>
+                    <span>Turning </span>
+                    <span className="text-green-400">coffee</span>
+                    <span> into </span>
+                    <span className="text-cyan-400">code</span>
+                    <span> since 2019.</span>
+                  </div>
+                );
+              }
+              return null;
+            })}
             {currentLineIndex < bioLines.length && (
               <span className="text-cyan-400 animate-pulse">▋</span>
             )}
