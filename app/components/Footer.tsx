@@ -16,15 +16,18 @@ export default function Footer() {
           {/* Social Links */}
           <div className="flex gap-4">
             <a href="https://github.com/Ronakneema/" target="_blank" rel="noopener noreferrer" 
-               className="p-2 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-gray-400 hover:text-cyan-400 hover:border-cyan-500/50 transition-all">
+               className="p-2 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-gray-400 hover:text-cyan-400 hover:border-cyan-500/50 transition-all"
+               aria-label="GitHub profile">
               <Github size={18} />
             </a>
             <a href="https://www.linkedin.com/in/ronak-neema/" target="_blank" rel="noopener noreferrer"
-               className="p-2 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-gray-400 hover:text-cyan-400 hover:border-cyan-500/50 transition-all">
+               className="p-2 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-gray-400 hover:text-cyan-400 hover:border-cyan-500/50 transition-all"
+               aria-label="LinkedIn profile">
               <Linkedin size={18} />
             </a>
             <a href="https://leetcode.com/RonakNeema/" target="_blank" rel="noopener noreferrer"
-               className="p-2 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-gray-400 hover:text-cyan-400 hover:border-cyan-500/50 transition-all">
+               className="p-2 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-gray-400 hover:text-cyan-400 hover:border-cyan-500/50 transition-all"
+               aria-label="LeetCode profile">
               <Code size={18} />
             </a>
           </div>
@@ -32,7 +35,7 @@ export default function Footer() {
         
         <div className="mt-8 pt-6 border-t border-[#2a2a2a] text-center">
           <p className="text-gray-500 font-mono text-sm">
-            <span className="text-cyan-400">$</span> echo "© 2025 Ronak Neema. All rights reserved."
+            <span className="text-cyan-400">$</span> echo © 2025 Ronak Neema. All rights reserved.
           </p>
         </div>
       </div>

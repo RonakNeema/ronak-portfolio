@@ -10,28 +10,63 @@ interface GuestbookEntry {
   timestamp: number;
 }
 
+function getInitialEntries(): GuestbookEntry[] {
+  if (typeof window === 'undefined') {
+    return [];
+  }
+
+  const saved = localStorage.getItem('portfolio-guestbook');
+  if (!saved) {
+    return [];
+  }
+
+  try {
+    const parsed = JSON.parse(saved);
+    if (!Array.isArray(parsed)) {
+      return [];
+    }
+
+    return parsed
+      .filter((entry): entry is GuestbookEntry => {
+        return (
+          typeof entry === 'object' &&
+          entry !== null &&
+          typeof entry.id === 'string' &&
+          typeof entry.name === 'string' &&
+          typeof entry.message === 'string' &&
+          typeof entry.timestamp === 'number'
+        );
+      })
+      .slice(0, 50);
+  } catch {
+    localStorage.removeItem('portfolio-guestbook');
+    return [];
+  }
+}
+
 export default function Guestbook() {
-  const [entries, setEntries] = useState<GuestbookEntry[]>([]);
+  const [entries, setEntries] = useState<GuestbookEntry[]>(getInitialEntries);
   const [name, setName] = useState('');
   const [message, setMessage] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [now, setNow] = useState(() => Date.now());
 
   useEffect(() => {
-    // Load from localStorage
-    const saved = localStorage.getItem('portfolio-guestbook');
-    if (saved) {
-      setEntries(JSON.parse(saved));
-    }
+    const timer = setInterval(() => {
+      setNow(Date.now());
+    }, 60000);
+    return () => clearInterval(timer);
   }, []);
 
   const saveEntry = () => {
     if (!name.trim() || !message.trim()) return;
 
+    const timestamp = Date.now();
     const newEntry: GuestbookEntry = {
-      id: Date.now().toString(),
+      id: typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `${timestamp}`,
       name: name.trim(),
       message: message.trim(),
-      timestamp: Date.now(),
+      timestamp,
     };
 
     const updated = [newEntry, ...entries].slice(0, 50); // Keep last 50
@@ -60,7 +95,7 @@ export default function Guestbook() {
   };
 
   const formatTime = (timestamp: number) => {
-    const diff = Date.now() - timestamp;
+    const diff = now - timestamp;
     const minutes = Math.floor(diff / 60000);
     const hours = Math.floor(diff / 3600000);
     const days = Math.floor(diff / 86400000);
@@ -114,7 +149,7 @@ export default function Guestbook() {
 
             <div className="mb-4">
               <label className="block text-sm text-gray-400 font-mono mb-2">
-                <span className="text-accent">$</span> echo "message"
+                <span className="text-accent">$</span> echo &quot;message&quot;
               </label>
               <textarea
                 value={message}

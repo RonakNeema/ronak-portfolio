@@ -10,7 +10,6 @@ interface ThemeContextType {
   accentColor: AccentColor;
   toggleTheme: () => void;
   setAccentColor: (color: AccentColor) => void;
-  mounted: boolean;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -77,30 +76,31 @@ function applyAccentVariables(root: HTMLElement, accentColor: AccentColor) {
   root.style.setProperty('--color-cyan-700', accent.cyan700);
 }
 
-export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>('dark');
-  const [accentColor, setAccent] = useState<AccentColor>('cyan');
-  const [mounted, setMounted] = useState(false);
+function getInitialTheme(): Theme {
+  if (typeof window === 'undefined') {
+    return 'dark';
+  }
+  const savedTheme = localStorage.getItem('portfolio-theme');
+  return savedTheme === 'light' ? 'light' : 'dark';
+}
 
-  // Load saved preferences on mount
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('portfolio-theme') as Theme;
-    const savedAccent = localStorage.getItem('portfolio-accent') as AccentColor;
-    
-    if (savedTheme && (savedTheme === 'dark' || savedTheme === 'light')) {
-      setTheme(savedTheme);
-    }
-    if (savedAccent && ['cyan', 'purple', 'green', 'orange'].includes(savedAccent)) {
-      setAccent(savedAccent);
-    }
-    
-    setMounted(true);
-  }, []);
+function getInitialAccent(): AccentColor {
+  if (typeof window === 'undefined') {
+    return 'cyan';
+  }
+  const savedAccent = localStorage.getItem('portfolio-accent');
+  if (savedAccent === 'purple' || savedAccent === 'green' || savedAccent === 'orange') {
+    return savedAccent;
+  }
+  return 'cyan';
+}
+
+export function ThemeProvider({ children }: { children: React.ReactNode }) {
+  const [theme, setTheme] = useState<Theme>(getInitialTheme);
+  const [accentColor, setAccent] = useState<AccentColor>(getInitialAccent);
 
   // Apply theme changes to DOM
   useEffect(() => {
-    if (!mounted) return;
-
     const root = document.documentElement;
     
     // Remove old theme classes and add new one
@@ -113,8 +113,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     // Save to localStorage
     localStorage.setItem('portfolio-theme', theme);
     localStorage.setItem('portfolio-accent', accentColor);
-    
-  }, [theme, accentColor, mounted]);
+  }, [theme, accentColor]);
 
   const toggleTheme = useCallback(() => {
     setTheme(prev => {
@@ -125,12 +124,10 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   const setAccentColor = useCallback((color: AccentColor) => {
     setAccent(color);
-    const root = document.documentElement;
-    applyAccentVariables(root, color);
   }, []);
 
   return (
-    <ThemeContext.Provider value={{ theme, accentColor, toggleTheme, setAccentColor, mounted }}>
+    <ThemeContext.Provider value={{ theme, accentColor, toggleTheme, setAccentColor }}>
       {children}
     </ThemeContext.Provider>
   );

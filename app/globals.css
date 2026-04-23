@@ -74,6 +74,11 @@ html.light .border-\[\#333\] {
   border-color: var(--card-border) !important;
 }
 
+html.light .site-nav {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-bottom: 1px solid #e5e7eb !important;
+}
+
 /* Accent colors */
 html[data-accent="cyan"] {
   --accent: #22d3d3;

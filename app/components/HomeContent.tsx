@@ -7,19 +7,12 @@ import Hero from './Hero';
 import About from './About';
 import Journey from './Journey';
 import Skills from './Skills';
-import Projects from './Projects';
 import GitHubStats from './GitHubStats';
 import Certifications from './Certifications';
 import Contact from './Contact';
 import Footer from './Footer';
 import CommandPalette from './CommandPalette';
 import EasterEgg from './EasterEgg';
-import LeetCodeStats from './LeetCodeStats';
-import Guestbook from './Guestbook';
-import Newsletter from './Newsletter';
-import VisitorCounter from './VisitorCounter';
-import GitHubActivity from './GitHubActivity';
-import CalendlyWidget from './CalendlyWidget';
 import TouchGestures from './TouchGestures';
 
 export default function HomeContent() {

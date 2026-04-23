@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { 
   Command, Search, Home, User, Briefcase, Code, Award, Mail, 
-  Github, Linkedin, ExternalLink, X, Folder
+  Github, Linkedin, ExternalLink, X
 } from 'lucide-react';
 
 interface CommandItem {
@@ -20,20 +20,26 @@ export default function CommandPalette() {
   const [search, setSearch] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
 
+  const openExternal = (url: string) => {
+    const newWindow = window.open(url, '_blank', 'noopener,noreferrer');
+    if (newWindow) {
+      newWindow.opener = null;
+    }
+  };
+
   const commands: CommandItem[] = [
     // Navigation
     { id: 'home', label: 'Go to Home', shortcut: 'H', icon: <Home size={16} />, action: () => scrollTo('hero'), category: 'navigation' },
     { id: 'about', label: 'Go to About', shortcut: 'A', icon: <User size={16} />, action: () => scrollTo('about'), category: 'navigation' },
     { id: 'journey', label: 'Go to Journey', shortcut: 'J', icon: <Briefcase size={16} />, action: () => scrollTo('journey'), category: 'navigation' },
     { id: 'skills', label: 'Go to Skills', shortcut: 'S', icon: <Code size={16} />, action: () => scrollTo('skills'), category: 'navigation' },
-    { id: 'projects', label: 'Go to Projects', shortcut: 'P', icon: <Folder size={16} />, action: () => scrollTo('projects'), category: 'navigation' },
     { id: 'certifications', label: 'Go to Certifications', shortcut: 'C', icon: <Award size={16} />, action: () => scrollTo('certifications'), category: 'navigation' },
     { id: 'contact', label: 'Go to Contact', icon: <Mail size={16} />, action: () => scrollTo('contact'), category: 'navigation' },
     // Social
-    { id: 'github', label: 'Open GitHub', icon: <Github size={16} />, action: () => window.open('https://github.com/Ronakneema', '_blank'), category: 'social' },
-    { id: 'linkedin', label: 'Open LinkedIn', icon: <Linkedin size={16} />, action: () => window.open('https://linkedin.com/in/ronak-neema', '_blank'), category: 'social' },
+    { id: 'github', label: 'Open GitHub', icon: <Github size={16} />, action: () => openExternal('https://github.com/Ronakneema'), category: 'social' },
+    { id: 'linkedin', label: 'Open LinkedIn', icon: <Linkedin size={16} />, action: () => openExternal('https://linkedin.com/in/ronak-neema'), category: 'social' },
     // Actions
-    { id: 'resume', label: 'Download Resume', icon: <ExternalLink size={16} />, action: () => window.open('/resume.pdf', '_blank'), category: 'action' },
+    { id: 'resume', label: 'Download Resume', icon: <ExternalLink size={16} />, action: () => window.open(`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/resume.pdf`, '_self'), category: 'action' },
   ];
 
   const scrollTo = (id: string) => {
@@ -87,11 +93,6 @@ export default function CommandPalette() {
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [handleKeyDown]);
 
-  // Reset selection when search changes
-  useEffect(() => {
-    setSelectedIndex(0);
-  }, [search]);
-
   if (!isOpen) {
     return (
       <button
@@ -116,7 +117,12 @@ export default function CommandPalette() {
       />
 
       {/* Palette */}
-      <div className="fixed top-1/4 left-1/2 -translate-x-1/2 z-[101] w-full max-w-lg mx-4">
+      <div
+        className="fixed top-1/4 left-1/2 -translate-x-1/2 z-[101] w-full max-w-lg mx-4"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Command palette"
+      >
         <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg overflow-hidden shadow-2xl">
           {/* Header */}
           <div className="bg-[#252525] px-4 py-2 flex items-center justify-between border-b border-[#2a2a2a]">
@@ -141,7 +147,10 @@ export default function CommandPalette() {
               <input
                 type="text"
                 value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                onChange={(e) => {
+                  setSearch(e.target.value);
+                  setSelectedIndex(0);
+                }}
                 placeholder="Type a command..."
                 autoFocus
                 className="flex-1 bg-transparent border-none outline-none text-white placeholder-gray-600 font-mono text-sm"

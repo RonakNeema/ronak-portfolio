@@ -10,19 +10,38 @@ interface Activity {
   time: string;
 }
 
+interface GitHubEvent {
+  type: string;
+  repo?: {
+    name?: string;
+  };
+  payload?: {
+    commits?: Array<{ message?: string }>;
+    action?: string;
+    pull_request?: {
+      title?: string;
+    };
+  };
+  created_at?: string;
+}
+
 export default function GitHubActivity() {
   const [activities, setActivities] = useState<Activity[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchActivity = async () => {
       try {
         // Fetch recent events from GitHub API
         const response = await fetch('https://api.github.com/users/RonakNeema/events/public?per_page=10');
-        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(`GitHub activity request failed with status ${response.status}`);
+        }
+        const data = (await response.json()) as GitHubEvent[];
 
         if (Array.isArray(data)) {
-          const parsed: Activity[] = data.slice(0, 5).map((event: any) => {
+          const parsed: Activity[] = data.slice(0, 5).map((event) => {
             let type: 'commit' | 'pr' | 'star' = 'commit';
             let message = '';
 
@@ -47,7 +66,7 @@ export default function GitHubActivity() {
               type,
               repo: event.repo?.name || 'Unknown',
               message: message.substring(0, 100),
-              time: new Date(event.created_at).toLocaleString(),
+              time: event.created_at ? new Date(event.created_at).toLocaleString() : 'Unknown time',
             };
           });
 
@@ -55,12 +74,8 @@ export default function GitHubActivity() {
         }
       } catch (error) {
         console.error('Failed to fetch GitHub activity:', error);
-        // Fallback to mock data
-        setActivities([
-          { type: 'commit', repo: 'RonakNeema/portfolio', message: 'Added new features', time: '2 hours ago' },
-          { type: 'pr', repo: 'RonakNeema/devops-tools', message: 'Opened PR: Fix CI pipeline', time: '5 hours ago' },
-          { type: 'star', repo: 'facebook/react', message: 'Starred repository', time: '1 day ago' },
-        ]);
+        setError('Unable to load recent GitHub activity right now.');
+        setActivities([]);
       } finally {
         setLoading(false);
       }
@@ -93,16 +108,21 @@ export default function GitHubActivity() {
   return (
     <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg p-4 hover:border-accent/30 transition-colors">
       <h3 className="text-sm font-mono text-gray-400 mb-3">Recent Activity</h3>
+      {error && <p className="text-xs text-amber-400 font-mono mb-2">{error}</p>}
       <div className="space-y-3">
-        {activities.map((activity, idx) => (
-          <div key={idx} className="flex items-start gap-3 text-xs">
+        {activities.map((activity) => (
+          <div key={`${activity.type}-${activity.repo}-${activity.time}`} className="flex items-start gap-3 text-xs">
             <div className="mt-0.5">{getIcon(activity.type)}</div>
             <div className="flex-1 min-w-0">
               <p className="text-white font-mono truncate">{activity.message}</p>
               <p className="text-gray-500 font-mono text-xs mt-0.5">{activity.repo}</p>
+              <p className="text-gray-600 font-mono text-xs mt-0.5">{activity.time}</p>
             </div>
           </div>
         ))}
+        {activities.length === 0 && !error && (
+          <p className="text-xs text-gray-500 font-mono">No recent public activity found.</p>
+        )}
       </div>
     </div>
   );

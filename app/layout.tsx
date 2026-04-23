@@ -4,6 +4,8 @@ import "./globals.css";
 import { ThemeProvider } from "./hooks/useTheme";
 import ThemeControls from "./components/ThemeControls";
 
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -30,21 +32,21 @@ export const metadata: Metadata = {
   creator: "Ronak Neema",
   publisher: "Ronak Neema",
   applicationName: "Ronak Portfolio",
-  manifest: "/manifest.json",
+  manifest: `${basePath}/manifest.json`,
   icons: {
-    icon: "/favicon.ico",
-    apple: "/apple-touch-icon.png",
+    icon: `${basePath}/favicon.svg`,
+    shortcut: `${basePath}/favicon.svg`,
   },
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://ronakneema.github.io/ronak-portfolio/",
+    url: `https://ronakneema.github.io${basePath}/`,
     title: "Ronak Neema | DevOps Engineer & Full Stack Developer",
     description: "Portfolio showcasing projects and experience in DevOps, AWS, CI/CD, and Full Stack Development",
     siteName: "Ronak Neema Portfolio",
     images: [
       {
-        url: "/ronak-portfolio/og-image.png",
+        url: `${basePath}/images/profile.jpg`,
         width: 1200,
         height: 630,
         alt: "Ronak Neema Portfolio",
@@ -55,7 +57,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Ronak Neema | DevOps Engineer & Full Stack Developer",
     description: "Portfolio showcasing projects and experience in DevOps, AWS, CI/CD, and Full Stack Development",
-    images: ["/ronak-portfolio/og-image.png"],
+    images: [`${basePath}/images/profile.jpg`],
   },
   robots: {
     index: true,

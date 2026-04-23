@@ -10,7 +10,7 @@ export default function Contact() {
     email: '',
     message: '',
   });
-  const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
+  const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error' | 'config_error'>('idle');
   const [currentField, setCurrentField] = useState<string | null>(null);
 
   const handleSubmit = async (e: FormEvent) => {
@@ -18,17 +18,12 @@ export default function Contact() {
     setStatus('sending');
     
     try {
-      // EmailJS configuration - Add your credentials in environment variables
-      const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || 'YOUR_SERVICE_ID';
-      const templateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID || 'YOUR_TEMPLATE_ID';
-      const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || 'YOUR_PUBLIC_KEY';
+      const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
+      const templateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
+      const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
 
-      // If keys not configured, use fallback simulation
-      if (serviceId === 'YOUR_SERVICE_ID') {
-        console.log('EmailJS not configured. Form data:', formData);
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        setStatus('success');
-        setFormData({ name: '', email: '', message: '' });
+      if (!serviceId || !templateId || !publicKey) {
+        setStatus('config_error');
         setTimeout(() => setStatus('idle'), 5000);
         return;
       }
@@ -79,13 +74,14 @@ export default function Contact() {
           <form onSubmit={handleSubmit} className="p-6 font-mono">
             {/* Name Field */}
             <div className="mb-6">
-              <label className="flex items-center gap-2 text-gray-400 text-sm mb-2">
+              <label htmlFor="contact-name" className="flex items-center gap-2 text-gray-400 text-sm mb-2">
                 <User size={14} className="text-cyan-400" />
                 <span className="text-cyan-400">$</span> enter_name:
               </label>
               <div className="flex items-center gap-2">
                 <span className="text-green-400">&gt;</span>
                 <input
+                  id="contact-name"
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -104,13 +100,14 @@ export default function Contact() {
 
             {/* Email Field */}
             <div className="mb-6">
-              <label className="flex items-center gap-2 text-gray-400 text-sm mb-2">
+              <label htmlFor="contact-email" className="flex items-center gap-2 text-gray-400 text-sm mb-2">
                 <Mail size={14} className="text-cyan-400" />
                 <span className="text-cyan-400">$</span> enter_email:
               </label>
               <div className="flex items-center gap-2">
                 <span className="text-green-400">&gt;</span>
                 <input
+                  id="contact-email"
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -129,13 +126,14 @@ export default function Contact() {
 
             {/* Message Field */}
             <div className="mb-6">
-              <label className="flex items-center gap-2 text-gray-400 text-sm mb-2">
+              <label htmlFor="contact-message" className="flex items-center gap-2 text-gray-400 text-sm mb-2">
                 <MessageSquare size={14} className="text-cyan-400" />
                 <span className="text-cyan-400">$</span> enter_message:
               </label>
               <div className="flex gap-2">
                 <span className="text-green-400">&gt;</span>
                 <textarea
+                  id="contact-message"
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                   onFocus={() => setCurrentField('message')}
@@ -183,6 +181,12 @@ export default function Contact() {
                 <div className="flex items-center gap-2 text-red-400 text-sm">
                   <AlertCircle size={16} />
                   <span>Failed to send. Try again.</span>
+                </div>
+              )}
+              {status === 'config_error' && (
+                <div className="flex items-center gap-2 text-amber-400 text-sm">
+                  <AlertCircle size={16} />
+                  <span>Contact form is temporarily unavailable.</span>
                 </div>
               )}
             </div>

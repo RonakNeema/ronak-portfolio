@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Trophy, Target, CheckCircle, Award } from 'lucide-react';
+import { Trophy, CheckCircle, Award } from 'lucide-react';
 
 interface LeetCodeStats {
   totalSolved: number;

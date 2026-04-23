@@ -63,7 +63,7 @@ export default function ShareButtons({
             className="fixed inset-0 z-40"
             onClick={() => setShowMenu(false)}
           />
-          <div className="absolute right-0 mt-2 z-50 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg shadow-xl overflow-hidden animate-in animate-in-scale">
+          <div className="absolute right-0 mt-2 z-50 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg shadow-xl overflow-hidden">
             <div className="bg-[#252525] px-4 py-2 border-b border-[#2a2a2a]">
               <span className="text-xs font-mono text-gray-400">Share via</span>
             </div>

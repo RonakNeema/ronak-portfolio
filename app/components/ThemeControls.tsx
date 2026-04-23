@@ -1,12 +1,17 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useSyncExternalStore } from 'react';
 import { Sun, Moon, Palette } from 'lucide-react';
 import { useTheme } from '../hooks/useTheme';
 
 export default function ThemeControls() {
-  const { theme, accentColor, toggleTheme, setAccentColor, mounted } = useTheme();
+  const { theme, accentColor, toggleTheme, setAccentColor } = useTheme();
   const [showColorPicker, setShowColorPicker] = useState(false);
+  const mounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  );
 
   const colors: Array<{ name: string; value: 'cyan' | 'purple' | 'green' | 'orange'; hex: string }> = [
     { name: 'Cyan', value: 'cyan', hex: '#22d3d3' },

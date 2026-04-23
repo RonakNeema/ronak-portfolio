@@ -9,6 +9,9 @@ const nextConfig: NextConfig = {
   },
   basePath: isProd ? '/ronak-portfolio' : '',
   assetPrefix: isProd ? '/ronak-portfolio' : '',
+  env: {
+    NEXT_PUBLIC_BASE_PATH: isProd ? '/ronak-portfolio' : '',
+  },
   trailingSlash: true,
 };
 

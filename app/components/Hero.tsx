@@ -165,7 +165,7 @@ export default function Hero() {
   }, [bioVisible, currentLineIndex, currentCharIndex]);
 
   return (
-    <section className="relative w-full min-h-screen overflow-hidden bg-[#0d0d0d]">
+    <section id="hero" className="relative w-full min-h-screen overflow-hidden bg-[#0d0d0d]">
       {/* Grid background effect */}
       <div 
         className="absolute inset-0 opacity-5"
@@ -224,24 +224,17 @@ export default function Hero() {
           <div className="text-gray-300 leading-relaxed min-h-[3rem]">
             {typedLines.map((line, idx) => {
               if (idx === 0) {
-                // First line: "// Passionate engineer building scalable systems."
                 return (
                   <div key={idx}>
-                    <span className="text-gray-500">// </span>
+                    <span className="text-gray-500">{'// '}</span>
                     <span className="text-cyan-400">Passionate engineer</span>
                     <span> building scalable systems.</span>
                   </div>
                 );
               } else if (idx === 1) {
-                // Second line: "// Turning coffee into code since 2019."
-                const text = line;
-                const beforeCoffee = text.substring(0, text.indexOf('coffee'));
-                const afterCoffee = text.substring(text.indexOf('coffee') + 6, text.indexOf('code'));
-                const afterCode = text.substring(text.indexOf('code') + 4);
-                
                 return (
                   <div key={idx}>
-                    <span className="text-gray-500">// </span>
+                    <span className="text-gray-500">{'// '}</span>
                     <span>Turning </span>
                     <span className="text-green-400">coffee</span>
                     <span> into </span>

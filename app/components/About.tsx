@@ -4,6 +4,8 @@ import { Download, User, Mail, MapPin, Briefcase, GraduationCap, Coffee } from '
 import ShareButtons from './ShareButtons';
 
 export default function About() {
+  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
+
   return (
     <section id="about" className="bg-transparent">
       <div className="max-w-6xl mx-auto px-4 md:px-8 py-16">
@@ -88,23 +90,23 @@ export default function About() {
                 </h4>
                 <div className="space-y-4 text-gray-300 leading-relaxed font-mono text-sm">
                   <p>
-                    <span className="text-gray-500">{'>'}</span> I'm a <span className="text-cyan-400">DevOps Engineer</span> and <span className="text-cyan-400">Full Stack Developer</span> passionate about building scalable, efficient systems that make a difference.
+                    <span className="text-gray-500">{'>'}</span> I&apos;m a <span className="text-cyan-400">DevOps Engineer</span> and <span className="text-cyan-400">Full Stack Developer</span> passionate about building scalable, efficient systems that make a difference.
                   </p>
                   <p>
-                    <span className="text-gray-500">{'>'}</span> Recently completed my <span className="text-green-400">Master's in Computer Science</span> at University of Colorado, Denver (May 2025), while working full-time as a DevOps Engineer at TCS.
+                    <span className="text-gray-500">{'>'}</span> Recently completed my <span className="text-green-400">Master&apos;s in Computer Science</span> at University of Colorado, Denver (May 2025), while working full-time as a DevOps Engineer at TCS.
                   </p>
                   <p>
-                    <span className="text-gray-500">{'>'}</span> I specialize in <span className="text-amber-400">AWS</span>, <span className="text-amber-400">CI/CD pipelines</span>, <span className="text-amber-400">TypeScript</span>, <span className="text-amber-400">React</span>, and <span className="text-amber-400">Node.js</span>. I've led critical projects across multiple organizations, from startups to enterprise.
+                    <span className="text-gray-500">{'>'}</span> I specialize in <span className="text-amber-400">AWS</span>, <span className="text-amber-400">CI/CD pipelines</span>, <span className="text-amber-400">TypeScript</span>, <span className="text-amber-400">React</span>, and <span className="text-amber-400">Node.js</span>. I&apos;ve led critical projects across multiple organizations, from startups to enterprise.
                   </p>
                   <p>
-                    <span className="text-gray-500">{'>'}</span> When I'm not coding, I'm exploring new technologies, contributing to open source, or turning <span className="text-green-400">coffee</span> into <span className="text-cyan-400">code</span>. ☕
+                    <span className="text-gray-500">{'>'}</span> When I&apos;m not coding, I&apos;m exploring new technologies, contributing to open source, or turning <span className="text-green-400">coffee</span> into <span className="text-cyan-400">code</span>. ☕
                   </p>
                 </div>
 
                 {/* CTA Buttons */}
                 <div className="mt-8 flex flex-wrap gap-4">
                   <a 
-                    href="/resume.pdf" 
+                    href={`${basePath}/resume.pdf`}
                     download
                     className="inline-flex items-center gap-2 px-6 py-3 bg-cyan-500/20 border border-cyan-500/50 hover:bg-cyan-500/30 text-cyan-400 font-mono text-sm rounded-lg transition-all duration-300 hover:scale-105 press-effect"
                   >
