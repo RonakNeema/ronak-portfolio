@@ -4,10 +4,10 @@ import { useEffect, useState } from 'react';
 
 const terminalLines = [
   { text: '$ initializing portfolio...', delay: 0 },
-  { text: '> loading skills.config', delay: 400 },
-  { text: '> fetching experience.json', delay: 800 },
-  { text: '> compiling projects...', delay: 1200 },
-  { text: '✓ ready', delay: 1600, isSuccess: true },
+  { text: '> loading skills.config', delay: 300 },
+  { text: '> fetching experience.json', delay: 600 },
+  { text: '> compiling projects...', delay: 900 },
+  { text: '✓ ready', delay: 1200, isSuccess: true },
 ];
 
 export default function LoadingScreen() {
@@ -22,8 +22,8 @@ export default function LoadingScreen() {
     if (visibleLines >= terminalLines.length) {
       setTimeout(() => {
         setFadeOut(true);
-        setTimeout(() => setIsLoading(false), 500);
-      }, 400);
+        setTimeout(() => setIsLoading(false), 400);
+      }, 300);
       return;
     }
 
@@ -37,9 +37,9 @@ export default function LoadingScreen() {
         charIndex++;
       } else {
         clearInterval(typeInterval);
-        setTimeout(() => setVisibleLines(v => v + 1), 200);
+        setTimeout(() => setVisibleLines(v => v + 1), 150);
       }
-    }, 30);
+    }, 20); // Faster typing
 
     return () => clearInterval(typeInterval);
   }, [visibleLines]);
@@ -48,7 +48,7 @@ export default function LoadingScreen() {
   useEffect(() => {
     const cursorInterval = setInterval(() => {
       setCursorVisible(v => !v);
-    }, 500);
+    }, 400);
     return () => clearInterval(cursorInterval);
   }, []);
 
@@ -60,50 +60,44 @@ export default function LoadingScreen() {
 
   return (
     <div 
-      className={`fixed inset-0 z-[100] flex items-center justify-center transition-opacity duration-500 bg-[#1a1a1a] ${
+      className={`fixed inset-0 z-[200] flex items-center justify-center transition-opacity duration-400 bg-[#1a1a1a] ${
         fadeOut ? 'opacity-0' : 'opacity-100'
       }`}
     >
-      <div className="w-full max-w-lg mx-4">
-        {/* Terminal Window */}
-        <div className="rounded-lg overflow-hidden shadow-2xl border border-gray-700">
-          {/* Terminal Header */}
-          <div className="bg-gray-800 px-4 py-2 flex items-center gap-2">
+      <div className="w-full max-w-lg px-6">
+        {/* Terminal window */}
+        <div className="bg-[#0d0d0d] rounded-lg border border-[#333] overflow-hidden shadow-2xl">
+          {/* Terminal header */}
+          <div className="flex items-center gap-2 px-4 py-3 bg-[#1a1a1a] border-b border-[#333]">
             <div className="w-3 h-3 rounded-full bg-red-500"></div>
             <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
             <div className="w-3 h-3 rounded-full bg-green-500"></div>
-            <span className="ml-4 text-gray-400 text-sm font-mono">ronak@portfolio ~ </span>
+            <span className="ml-2 text-xs text-gray-500 font-mono">ronak@portfolio ~ </span>
           </div>
           
-          {/* Terminal Body */}
-          <div className="bg-[#1e1e1e] p-4 min-h-[200px] font-mono text-sm">
-            {/* Completed lines */}
+          {/* Terminal content */}
+          <div className="p-4 font-mono text-sm space-y-1 min-h-[160px]">
             {terminalLines.slice(0, visibleLines).map((line, idx) => (
-              <div key={idx} className={`mb-1 ${line.isSuccess ? successColor : textColor}`}>
-                {line.text.startsWith('$') ? (
-                  <span><span className={promptColor}>$</span>{line.text.slice(1)}</span>
-                ) : line.text.startsWith('>') ? (
-                  <span><span className="text-gray-500">›</span>{line.text.slice(1)}</span>
-                ) : (
-                  line.text
-                )}
+              <div key={idx} className={line.isSuccess ? successColor : textColor}>
+                {line.text}
               </div>
             ))}
             
-            {/* Currently typing line */}
             {visibleLines < terminalLines.length && (
-              <div className={`mb-1 ${terminalLines[visibleLines]?.isSuccess ? successColor : textColor}`}>
-                {currentText.startsWith('$') ? (
-                  <span><span className={promptColor}>$</span>{currentText.slice(1)}</span>
-                ) : currentText.startsWith('>') ? (
-                  <span><span className="text-gray-500">›</span>{currentText.slice(1)}</span>
-                ) : (
-                  currentText
-                )}
+              <div className={textColor}>
+                {currentText}
                 <span className={`${cursorVisible ? 'opacity-100' : 'opacity-0'} ${promptColor}`}>▋</span>
               </div>
             )}
           </div>
+        </div>
+        
+        {/* Progress bar */}
+        <div className="mt-4 h-1 bg-[#333] rounded-full overflow-hidden">
+          <div 
+            className="h-full bg-gradient-to-r from-cyan-500 to-cyan-400 transition-all duration-300"
+            style={{ width: `${(visibleLines / terminalLines.length) * 100}%` }}
+          />
         </div>
       </div>
     </div>

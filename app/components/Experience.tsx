@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useScrollAnimation } from '../hooks/useScrollAnimation';
 import { Briefcase, GraduationCap, Code, Users, ExternalLink } from 'lucide-react';
 
 const workData = [
@@ -110,18 +109,17 @@ const educationData = [
 
 export default function Experience() {
   const [activeTab, setActiveTab] = useState<'work' | 'education'>('work');
-  const { ref, isVisible } = useScrollAnimation(0.85);
 
   const data = activeTab === 'work' ? workData : educationData;
 
   return (
-    <div ref={ref} className="w-full">
+    <div className="w-full">
       {/* Tabs */}
-      <div className={`flex justify-center mb-12 animate-in ${isVisible ? 'show' : ''}`}>
+      <div className="flex justify-center mb-8">
         <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg p-1.5 flex gap-2 font-mono">
           <button
             onClick={() => setActiveTab('work')}
-            className={`px-6 py-3 rounded-lg text-sm transition-all duration-300 flex items-center gap-2 ${
+            className={`px-6 py-3 rounded-lg text-sm transition-colors duration-200 flex items-center gap-2 ${
               activeTab === 'work' 
                 ? 'bg-cyan-600 text-white' 
                 : 'text-gray-400 hover:text-cyan-400 hover:bg-[#252525]'
@@ -132,7 +130,7 @@ export default function Experience() {
           </button>
           <button
             onClick={() => setActiveTab('education')}
-            className={`px-6 py-3 rounded-lg text-sm transition-all duration-300 flex items-center gap-2 ${
+            className={`px-6 py-3 rounded-lg text-sm transition-colors duration-200 flex items-center gap-2 ${
               activeTab === 'education' 
                 ? 'bg-cyan-600 text-white' 
                 : 'text-gray-400 hover:text-cyan-400 hover:bg-[#252525]'
@@ -158,8 +156,7 @@ export default function Experience() {
             return (
               <div 
                 key={`${activeTab}-${idx}`}
-                className={`relative animate-in ${isVisible ? 'show' : ''}`}
-                style={{ transitionDelay: `${idx * 100}ms` }}
+                className="relative animate-in show"
               >
                 {/* Timeline Dot */}
                 <div className="absolute left-5 md:left-1/2 top-6 -translate-x-1/2 p-4 rounded-full flex justify-center items-center bg-cyan-500/20">

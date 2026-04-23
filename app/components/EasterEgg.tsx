@@ -155,18 +155,34 @@ export default function EasterEgg() {
     setScore(0);
   };
 
-  // Hint indicator
+  // Hint indicator with click button
   if (!isActive && showHint) {
     return (
-      <div className="fixed bottom-20 right-6 z-40 animate-bounce">
-        <div className="bg-[#1a1a1a] border border-cyan-500/30 rounded-lg px-3 py-2 font-mono text-xs text-cyan-400">
-          ↑↑↓↓←→←→BA
-        </div>
-      </div>
+      <button
+        onClick={() => setIsActive(true)}
+        className="fixed bottom-20 right-6 z-40 animate-bounce bg-amber-500/20 border border-amber-500/50 rounded-lg px-3 py-2 font-mono text-xs text-amber-400 hover:bg-amber-500/30 transition-all"
+      >
+        🎮 Click to play Snake!
+      </button>
     );
   }
 
-  if (!isActive) return null;
+  // Always show game button (bottom right, below command palette button)
+  if (!isActive) {
+    return (
+      <button
+        onClick={() => setIsActive(true)}
+        className="fixed bottom-20 right-6 z-40 p-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-gray-400 hover:text-amber-400 hover:border-amber-500/50 transition-all duration-300 shadow-lg group"
+        aria-label="Play Snake Game"
+        title="Play Snake Game"
+      >
+        <Trophy size={20} />
+        <span className="absolute right-full mr-3 top-1/2 -translate-y-1/2 px-2 py-1 bg-[#252525] border border-[#2a2a2a] rounded text-xs font-mono text-gray-500 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
+          Play Game
+        </span>
+      </button>
+    );
+  }
 
   return (
     <>

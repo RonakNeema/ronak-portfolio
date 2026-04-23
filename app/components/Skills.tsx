@@ -1,6 +1,5 @@
 'use client';
 
-import { useScrollAnimation } from '../hooks/useScrollAnimation';
 import { Code2, Cloud, Database, Wrench, Terminal, GitBranch, Server, Box } from 'lucide-react';
 
 const skillsData = [
@@ -47,13 +46,11 @@ const skillsData = [
 ];
 
 export default function Skills() {
-  const { ref, isVisible } = useScrollAnimation(0.85);
-
   return (
     <section id="skills" className="bg-transparent">
-      <div className="max-w-6xl mx-auto px-4 md:px-8 py-16" ref={ref}>
+      <div className="max-w-6xl mx-auto px-4 md:px-8 py-16">
         {/* Section Header */}
-        <div className={`mb-12 animate-in ${isVisible ? 'show' : ''}`}>
+        <div className="mb-12">
           <p className="text-cyan-400 font-mono text-sm mb-2">{'// skills'}</p>
           <h3 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white font-mono">
             <span className="text-gray-500">$</span> ls <span className="text-cyan-400">./skills/</span>
@@ -64,13 +61,12 @@ export default function Skills() {
         </div>
         
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {skillsData.map((skillGroup, idx) => {
+          {skillsData.map((skillGroup) => {
             const IconComponent = skillGroup.icon;
             return (
               <div 
                 key={skillGroup.category}
-                className={`bg-[#1a1a1a] border border-[#2a2a2a] hover:border-cyan-500/30 rounded-lg overflow-hidden animate-in ${isVisible ? 'show' : ''} transition-all duration-300 hover:scale-105`}
-                style={{ transitionDelay: `${idx * 50}ms` }}
+                className="bg-[#1a1a1a] border border-[#2a2a2a] hover:border-cyan-500/30 rounded-lg overflow-hidden transition-all duration-300 hover:scale-105"
               >
                 {/* Terminal Header */}
                 <div className="bg-[#252525] px-3 py-1.5 flex items-center gap-1.5 border-b border-[#2a2a2a]">

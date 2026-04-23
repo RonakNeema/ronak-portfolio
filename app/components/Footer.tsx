@@ -4,7 +4,7 @@ import { Github, Linkedin, Code, Terminal } from 'lucide-react';
 
 export default function Footer() {
   return (
-    <footer className="bg-[#0d0d0d] border-t border-[#2a2a2a] py-12">
+    <footer className="border-t border-[#2a2a2a] py-12">
       <div className="max-w-5xl mx-auto px-8">
         <div className="flex flex-col md:flex-row justify-between items-center gap-6">
           {/* Logo */}

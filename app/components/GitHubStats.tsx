@@ -1,62 +1,162 @@
 'use client';
 
-import { Github, GitCommit, GitPullRequest, Star, Users, Calendar } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { FolderGit2, Star, Users, UserPlus, FileCode2 } from 'lucide-react';
 
-// Static stats - in production, you'd fetch from GitHub API
-const stats = {
-  repos: 24,
-  stars: 67,
-  commits: 1243,
-  contributions: 892,
-  followers: 45,
-  following: 32,
-};
+interface GitHubStatsData {
+  repos: number;
+  stars: number;
+  followers: number;
+  following: number;
+  publicGists: number;
+}
 
-const languages = [
-  { name: 'TypeScript', percentage: 35, color: '#3178c6' },
-  { name: 'Python', percentage: 25, color: '#3572A5' },
-  { name: 'Go', percentage: 20, color: '#00ADD8' },
-  { name: 'Shell', percentage: 12, color: '#89e051' },
-  { name: 'Other', percentage: 8, color: '#6b7280' },
-];
+interface Language {
+  name: string;
+  percentage: number;
+  color: string;
+}
 
-// Static contribution graph data (seeded pattern to avoid hydration mismatch)
-const contributionData = [
-  [2, 1, 4, 0, 3, 2, 1],
-  [0, 3, 1, 2, 4, 1, 3],
-  [4, 2, 0, 3, 1, 4, 2],
-  [1, 0, 3, 4, 2, 0, 1],
-  [3, 4, 2, 1, 0, 3, 4],
-  [2, 1, 4, 3, 2, 1, 0],
-  [0, 2, 1, 4, 3, 2, 1],
-  [4, 3, 0, 2, 1, 4, 3],
-  [1, 4, 3, 0, 2, 1, 4],
-  [3, 0, 2, 1, 4, 3, 2],
-  [2, 1, 4, 3, 0, 2, 1],
-  [4, 3, 1, 2, 3, 4, 0],
-  [0, 2, 3, 4, 1, 0, 3],
-  [3, 1, 0, 2, 4, 3, 2],
-  [1, 4, 2, 3, 0, 1, 4],
-  [4, 0, 3, 1, 2, 4, 1],
-  [2, 3, 1, 4, 3, 2, 0],
-  [0, 1, 4, 0, 1, 3, 2],
-  [3, 2, 0, 3, 4, 0, 4],
-  [1, 4, 3, 2, 1, 2, 3],
-];
+interface GitHubUserResponse {
+  public_repos: number;
+  followers: number;
+  following: number;
+  public_gists: number;
+}
 
-const contributionColors = [
-  'bg-[#1a1a1a]',
-  'bg-cyan-900/50',
-  'bg-cyan-700/60',
-  'bg-cyan-500/70',
-  'bg-cyan-400',
-];
+interface GitHubRepoResponse {
+  stargazers_count: number;
+  language: string | null;
+}
 
 export default function GitHubStats() {
+  const [stats, setStats] = useState<GitHubStatsData | null>(null);
+  const [languages, setLanguages] = useState<Language[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchGitHubData = async () => {
+      try {
+        setError(null);
+
+        const [userResponse, reposResponse] = await Promise.all([
+          fetch('https://api.github.com/users/RonakNeema'),
+          fetch('https://api.github.com/users/RonakNeema/repos?per_page=100'),
+        ]);
+
+        if (!userResponse.ok || !reposResponse.ok) {
+          throw new Error(`GitHub API request failed (${userResponse.status}/${reposResponse.status})`);
+        }
+
+        const userData = (await userResponse.json()) as GitHubUserResponse;
+        const reposData = (await reposResponse.json()) as GitHubRepoResponse[];
+
+        if (!Array.isArray(reposData)) {
+          throw new Error('Invalid GitHub repositories response');
+        }
+
+        const totalStars = reposData.reduce((sum, repo) => sum + (repo.stargazers_count || 0), 0);
+
+        setStats({
+          repos: userData.public_repos,
+          stars: totalStars,
+          followers: userData.followers,
+          following: userData.following,
+          publicGists: userData.public_gists,
+        });
+
+        const languageCounts: Record<string, number> = {};
+        for (const repo of reposData) {
+          if (repo.language) {
+            languageCounts[repo.language] = (languageCounts[repo.language] || 0) + 1;
+          }
+        }
+
+        const totalLanguageRepos = Object.values(languageCounts).reduce((count, value) => count + value, 0);
+        const languageColors: Record<string, string> = {
+          TypeScript: '#3178c6',
+          JavaScript: '#f1e05a',
+          Python: '#3572A5',
+          Go: '#00ADD8',
+          Java: '#b07219',
+          Shell: '#89e051',
+          HTML: '#e34c26',
+          CSS: '#563d7c',
+        };
+
+        if (totalLanguageRepos === 0) {
+          setLanguages([]);
+        } else {
+          const topLanguages = Object.entries(languageCounts)
+            .sort(([, a], [, b]) => b - a)
+            .slice(0, 6)
+            .map(([name, count]) => ({
+              name,
+              percentage: Math.round((count / totalLanguageRepos) * 100),
+              color: languageColors[name] || '#6b7280',
+            }));
+
+          setLanguages(topLanguages);
+        }
+      } catch (fetchError) {
+        console.error('Failed to fetch GitHub data:', fetchError);
+        setError('Unable to load live GitHub stats right now.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchGitHubData();
+  }, []);
+
+  if (loading) {
+    return (
+      <section id="github-stats">
+        <div className="max-w-6xl mx-auto">
+          <div className="mb-12">
+            <p className="text-cyan-400 font-mono text-sm mb-2">{'// github'}</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-white font-mono">
+              <span className="text-gray-500">$</span> git log <span className="text-cyan-400">--stat</span>
+            </h2>
+          </div>
+          <div className="flex items-center justify-center py-20">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-cyan-400"></div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (error || !stats) {
+    return (
+      <section id="github-stats">
+        <div className="max-w-6xl mx-auto">
+          <div className="mb-12">
+            <p className="text-cyan-400 font-mono text-sm mb-2">{'// github'}</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-white font-mono">
+              <span className="text-gray-500">$</span> git log <span className="text-cyan-400">--stat</span>
+            </h2>
+          </div>
+          <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg p-6 font-mono text-sm text-gray-400">
+            {error}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  const statCards = [
+    { label: 'Repositories', value: stats.repos, icon: FolderGit2 },
+    { label: 'Stars', value: stats.stars, icon: Star },
+    { label: 'Followers', value: stats.followers, icon: Users },
+    { label: 'Following', value: stats.following, icon: UserPlus },
+    { label: 'Public Gists', value: stats.publicGists, icon: FileCode2 },
+  ];
+
   return (
-    <section id="github-stats" className="py-20 px-6 md:px-12 bg-[#0d0d0d]">
+    <section id="github-stats">
       <div className="max-w-6xl mx-auto">
-        {/* Section Header */}
         <div className="mb-12">
           <p className="text-cyan-400 font-mono text-sm mb-2">{'// github'}</p>
           <h2 className="text-3xl md:text-4xl font-bold text-white font-mono">
@@ -64,125 +164,73 @@ export default function GitHubStats() {
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Stats Cards */}
-          <div className="lg:col-span-1 grid grid-cols-2 gap-4">
-            <StatCard icon={<Github size={20} />} label="Repositories" value={stats.repos} />
-            <StatCard icon={<Star size={20} />} label="Stars" value={stats.stars} />
-            <StatCard icon={<GitCommit size={20} />} label="Commits" value={stats.commits} />
-            <StatCard icon={<GitPullRequest size={20} />} label="Contributions" value={stats.contributions} />
-            <StatCard icon={<Users size={20} />} label="Followers" value={stats.followers} />
-            <StatCard icon={<Calendar size={20} />} label="This Year" value={stats.contributions} />
+        <div className="grid md:grid-cols-2 gap-6">
+          <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg overflow-hidden">
+            <div className="bg-[#2a2a2a] px-4 py-2 flex items-center justify-between border-b border-[#333]">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                <div className="w-3 h-3 rounded-full bg-green-500"></div>
+              </div>
+              <span className="text-xs text-gray-400 font-mono">profile.json</span>
+            </div>
+
+            <div className="p-4 grid grid-cols-2 gap-3">
+              {statCards.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <div key={item.label} className="bg-[#0d0d0d] border border-[#2a2a2a] rounded-lg p-3">
+                    <div className="flex items-center gap-2 mb-1">
+                      <Icon className="text-cyan-400" size={14} />
+                      <span className="text-gray-500 text-xs font-mono">{item.label}</span>
+                    </div>
+                    <div className="text-white font-mono text-lg font-bold">{item.value.toLocaleString()}</div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
 
-          {/* Contribution Graph */}
-          <div className="lg:col-span-2 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg overflow-hidden">
-            <div className="bg-[#252525] px-4 py-2 flex items-center gap-2 border-b border-[#2a2a2a]">
-              <div className="w-3 h-3 rounded-full bg-red-500"></div>
-              <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-              <div className="w-3 h-3 rounded-full bg-green-500"></div>
-              <span className="ml-4 text-gray-400 text-sm font-mono">contribution_graph.svg</span>
+          <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg overflow-hidden">
+            <div className="bg-[#2a2a2a] px-4 py-2 flex items-center justify-between border-b border-[#333]">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                <div className="w-3 h-3 rounded-full bg-green-500"></div>
+              </div>
+              <span className="text-xs text-gray-400 font-mono">languages.json</span>
             </div>
-            
-            <div className="p-6">
-              <h3 className="text-white font-mono text-sm mb-4 flex items-center gap-2">
-                <span className="text-gray-500">&gt;</span>
-                Contribution Activity
-              </h3>
-              
-              {/* Contribution Grid */}
-              <div className="flex gap-1 overflow-x-auto pb-2">
-                {contributionData.map((week, weekIndex) => (
-                  <div key={weekIndex} className="flex flex-col gap-1">
-                    {week.map((level, dayIndex) => (
+
+            <div className="p-4">
+              {languages.length === 0 ? (
+                <p className="text-gray-500 font-mono text-sm">No language data available.</p>
+              ) : (
+                <div className="space-y-3">
+                  <div className="flex gap-1 h-2 rounded-full overflow-hidden">
+                    {languages.map((lang) => (
                       <div
-                        key={dayIndex}
-                        className={`w-3 h-3 rounded-sm ${contributionColors[level]} border border-[#2a2a2a]`}
-                        title={`${level} contributions`}
+                        key={lang.name}
+                        style={{ width: `${lang.percentage}%`, backgroundColor: lang.color }}
+                        className="transition-all hover:opacity-80"
                       />
                     ))}
                   </div>
-                ))}
-              </div>
 
-              {/* Legend */}
-              <div className="flex items-center justify-end gap-2 mt-4 text-xs text-gray-500 font-mono">
-                <span>Less</span>
-                {contributionColors.map((color, i) => (
-                  <div key={i} className={`w-3 h-3 rounded-sm ${color} border border-[#2a2a2a]`} />
-                ))}
-                <span>More</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Languages */}
-        <div className="mt-6 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg overflow-hidden">
-          <div className="bg-[#252525] px-4 py-2 flex items-center gap-2 border-b border-[#2a2a2a]">
-            <div className="w-3 h-3 rounded-full bg-red-500"></div>
-            <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-            <div className="w-3 h-3 rounded-full bg-green-500"></div>
-            <span className="ml-4 text-gray-400 text-sm font-mono">languages.json</span>
-          </div>
-          
-          <div className="p-6">
-            <h3 className="text-white font-mono text-sm mb-4 flex items-center gap-2">
-              <span className="text-gray-500">&gt;</span>
-              Most Used Languages
-            </h3>
-
-            {/* Language Bar */}
-            <div className="flex h-3 rounded-full overflow-hidden mb-4">
-              {languages.map((lang, i) => (
-                <div
-                  key={i}
-                  style={{ width: `${lang.percentage}%`, backgroundColor: lang.color }}
-                  className="first:rounded-l-full last:rounded-r-full"
-                  title={`${lang.name}: ${lang.percentage}%`}
-                />
-              ))}
-            </div>
-
-            {/* Language Labels */}
-            <div className="flex flex-wrap gap-4">
-              {languages.map((lang, i) => (
-                <div key={i} className="flex items-center gap-2">
-                  <div
-                    className="w-3 h-3 rounded-full"
-                    style={{ backgroundColor: lang.color }}
-                  />
-                  <span className="text-gray-300 text-sm font-mono">{lang.name}</span>
-                  <span className="text-gray-500 text-xs">{lang.percentage}%</span>
+                  <div className="grid grid-cols-2 gap-2">
+                    {languages.map((lang) => (
+                      <div key={lang.name} className="flex items-center gap-2 text-sm">
+                        <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: lang.color }} />
+                        <span className="text-gray-300 font-mono truncate">{lang.name}</span>
+                        <span className="text-gray-500 font-mono ml-auto">{lang.percentage}%</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              ))}
+              )}
             </div>
           </div>
-        </div>
-
-        {/* View Profile */}
-        <div className="mt-8 text-center">
-          <a
-            href="https://github.com/Ronakneema"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg text-gray-300 hover:text-cyan-400 hover:border-cyan-500/50 transition-all duration-300 font-mono text-sm"
-          >
-            <Github size={18} />
-            View Full Profile
-          </a>
         </div>
       </div>
     </section>
-  );
-}
-
-function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string; value: number }) {
-  return (
-    <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg p-4 hover:border-cyan-500/30 transition-colors">
-      <div className="text-cyan-400 mb-2">{icon}</div>
-      <div className="text-2xl font-bold text-white font-mono">{value.toLocaleString()}</div>
-      <div className="text-xs text-gray-500 font-mono">{label}</div>
-    </div>
   );
 }

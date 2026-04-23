@@ -2,13 +2,16 @@
 
 import { useEffect, useState } from 'react';
 
+// CURSOR STYLE: Change this to switch between styles
+// Options: 'crosshair' | 'ring'
+const CURSOR_STYLE: 'crosshair' | 'ring' = 'ring';
+
 export default function CustomCursor() {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isVisible, setIsVisible] = useState(false);
   const [isPointer, setIsPointer] = useState(false);
 
   useEffect(() => {
-    // Check if touch device
     const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
     if (isTouchDevice) return;
 
@@ -39,7 +42,6 @@ export default function CustomCursor() {
     document.addEventListener('mouseleave', handleMouseLeave);
     document.addEventListener('mouseenter', handleMouseEnter);
 
-    // Hide default cursor
     document.body.style.cursor = 'none';
     document.querySelectorAll('a, button').forEach((el) => {
       (el as HTMLElement).style.cursor = 'none';
@@ -56,39 +58,66 @@ export default function CustomCursor() {
 
   if (!isVisible) return null;
 
-  return (
-    <>
-      {/* Main cursor block */}
+  // CROSSHAIR STYLE
+  if (CURSOR_STYLE === 'crosshair') {
+    return (
       <div
-        className="fixed pointer-events-none z-[9999] transition-transform duration-75"
-        style={{
-          left: position.x,
-          top: position.y,
-          transform: `translate(-50%, -50%) ${isPointer ? 'scale(1.5)' : 'scale(1)'}`,
-        }}
-      >
-        <div 
-          className={`w-4 h-5 font-mono text-cyan-400 flex items-center justify-center transition-all duration-150 ${
-            isPointer ? 'text-cyan-300' : ''
-          }`}
-          style={{
-            textShadow: isPointer 
-              ? '0 0 10px rgba(34, 211, 211, 0.8), 0 0 20px rgba(34, 211, 211, 0.4)' 
-              : '0 0 5px rgba(34, 211, 211, 0.5)',
-          }}
-        >
-          ▋
-        </div>
-      </div>
-      
-      {/* Trailing glow */}
-      <div
-        className="fixed pointer-events-none z-[9998] w-8 h-8 rounded-full opacity-20 transition-all duration-300"
+        className="fixed pointer-events-none z-[9999]"
         style={{
           left: position.x,
           top: position.y,
           transform: 'translate(-50%, -50%)',
-          background: 'radial-gradient(circle, rgba(34, 211, 211, 0.4) 0%, transparent 70%)',
+        }}
+      >
+        {/* Vertical line */}
+        <div 
+          className={`absolute left-1/2 -translate-x-1/2 w-px bg-cyan-400 transition-all duration-150 ${
+            isPointer ? 'h-6 opacity-100' : 'h-4 opacity-70'
+          }`}
+          style={{ top: isPointer ? -12 : -8 }}
+        />
+        {/* Horizontal line */}
+        <div 
+          className={`absolute top-1/2 -translate-y-1/2 h-px bg-cyan-400 transition-all duration-150 ${
+            isPointer ? 'w-6 opacity-100' : 'w-4 opacity-70'
+          }`}
+          style={{ left: isPointer ? -12 : -8 }}
+        />
+        {/* Center dot */}
+        <div 
+          className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-400 transition-all duration-150 ${
+            isPointer ? 'w-2 h-2' : 'w-1 h-1'
+          }`}
+        />
+      </div>
+    );
+  }
+
+  // RING STYLE
+  return (
+    <>
+      {/* Inner dot */}
+      <div
+        className="fixed pointer-events-none z-[9999]"
+        style={{
+          left: position.x,
+          top: position.y,
+          transform: 'translate(-50%, -50%)',
+        }}
+      >
+        <div className={`rounded-full bg-cyan-400 transition-all duration-150 ${
+          isPointer ? 'w-2 h-2' : 'w-1.5 h-1.5'
+        }`} />
+      </div>
+      {/* Outer ring */}
+      <div
+        className={`fixed pointer-events-none z-[9998] rounded-full border-2 border-cyan-400 transition-all duration-200 ${
+          isPointer ? 'w-10 h-10 opacity-100' : 'w-6 h-6 opacity-60'
+        }`}
+        style={{
+          left: position.x,
+          top: position.y,
+          transform: 'translate(-50%, -50%)',
         }}
       />
     </>

@@ -7,6 +7,179 @@
   --accent-green: #4ade80;
   --card-bg: #1a1a1a;
   --card-border: #2a2a2a;
+  --accent-rgb: 34 211 211;
+  --bg-primary: #0d0d0d;
+  --bg-secondary: #1a1a1a;
+  --bg-tertiary: #2a2a2a;
+  --text-primary: #ffffff;
+  --text-secondary: #9ca3af;
+}
+
+/* Light mode */
+html.light {
+  --background: #ffffff;
+  --foreground: #1a1a1a;
+  --card-bg: #f3f4f6;
+  --card-border: #e5e7eb;
+  --bg-primary: #ffffff;
+  --bg-secondary: #f9fafb;
+  --bg-tertiary: #e5e7eb;
+  --text-primary: #1a1a1a;
+  --text-secondary: #4b5563;
+}
+
+/* Apply light mode to all elements */
+html.light body {
+  background: var(--background) !important;
+  color: var(--foreground) !important;
+}
+
+html.light main {
+  background: linear-gradient(180deg, #ffffff 0%, #f9fafb 50%, #ffffff 100%) !important;
+}
+
+html.light section {
+  background-color: var(--bg-primary) !important;
+}
+
+html.light .bg-\[\#0d0d0d\],
+html.light .bg-\[\#111111\] {
+  background-color: var(--bg-primary) !important;
+}
+
+html.light .bg-\[\#1a1a1a\] {
+  background-color: var(--bg-secondary) !important;
+}
+
+html.light .bg-\[\#2a2a2a\],
+html.light .bg-\[\#252525\] {
+  background-color: var(--bg-tertiary) !important;
+}
+
+html.light .text-white {
+  color: var(--text-primary) !important;
+}
+
+html.light .text-gray-400,
+html.light .text-gray-500 {
+  color: var(--text-secondary) !important;
+}
+
+html.light .text-gray-300 {
+  color: #6b7280 !important;
+}
+
+html.light .border-\[\#2a2a2a\],
+html.light .border-\[\#333\] {
+  border-color: var(--card-border) !important;
+}
+
+/* Accent colors */
+html[data-accent="cyan"] {
+  --accent: #22d3d3;
+  --accent-rgb: 34 211 211;
+}
+
+html[data-accent="purple"] {
+  --accent: #a855f7;
+  --accent-rgb: 168 85 247;
+}
+
+html[data-accent="green"] {
+  --accent: #34d399;
+  --accent-rgb: 52 211 153;
+}
+
+html[data-accent="orange"] {
+  --accent: #fb923c;
+  --accent-rgb: 251 146 60;
+}
+
+/* Remap common cyan utility classes to the selected accent */
+html[data-accent] .text-cyan-300,
+html[data-accent] .text-cyan-400,
+html[data-accent] .text-cyan-500,
+html[data-accent] .text-cyan-600 {
+  color: rgb(var(--accent-rgb)) !important;
+}
+
+html[data-accent] .bg-cyan-400,
+html[data-accent] .bg-cyan-500,
+html[data-accent] .bg-cyan-600 {
+  background-color: rgb(var(--accent-rgb)) !important;
+}
+
+html[data-accent] .bg-cyan-500\/10 {
+  background-color: rgb(var(--accent-rgb) / 0.1) !important;
+}
+
+html[data-accent] .bg-cyan-500\/20,
+html[data-accent] .bg-cyan-600\/20 {
+  background-color: rgb(var(--accent-rgb) / 0.2) !important;
+}
+
+html[data-accent] .bg-cyan-500\/30 {
+  background-color: rgb(var(--accent-rgb) / 0.3) !important;
+}
+
+html[data-accent] .bg-cyan-500\/50 {
+  background-color: rgb(var(--accent-rgb) / 0.5) !important;
+}
+
+html[data-accent] .border-cyan-400,
+html[data-accent] .border-cyan-500,
+html[data-accent] .border-cyan-600 {
+  border-color: rgb(var(--accent-rgb)) !important;
+}
+
+html[data-accent] .border-cyan-500\/20 {
+  border-color: rgb(var(--accent-rgb) / 0.2) !important;
+}
+
+html[data-accent] .border-cyan-500\/30 {
+  border-color: rgb(var(--accent-rgb) / 0.3) !important;
+}
+
+html[data-accent] .border-cyan-500\/50 {
+  border-color: rgb(var(--accent-rgb) / 0.5) !important;
+}
+
+html[data-accent] .hover\:text-cyan-300:hover,
+html[data-accent] .hover\:text-cyan-400:hover {
+  color: rgb(var(--accent-rgb)) !important;
+}
+
+html[data-accent] .hover\:bg-cyan-500\/10:hover {
+  background-color: rgb(var(--accent-rgb) / 0.1) !important;
+}
+
+html[data-accent] .hover\:bg-cyan-500\/20:hover {
+  background-color: rgb(var(--accent-rgb) / 0.2) !important;
+}
+
+html[data-accent] .hover\:bg-cyan-500\/30:hover {
+  background-color: rgb(var(--accent-rgb) / 0.3) !important;
+}
+
+html[data-accent] .hover\:border-cyan-400:hover,
+html[data-accent] .hover\:border-cyan-500\/30:hover,
+html[data-accent] .hover\:border-cyan-500\/50:hover {
+  border-color: rgb(var(--accent-rgb) / 0.5) !important;
+}
+
+html[data-accent] .focus\:border-cyan-500:focus,
+html[data-accent] .focus\:border-cyan-500\/50:focus {
+  border-color: rgb(var(--accent-rgb)) !important;
+}
+
+html[data-accent] .from-cyan-500 {
+  --tw-gradient-from: rgb(var(--accent-rgb)) var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: rgb(var(--accent-rgb) / 0) var(--tw-gradient-to-position) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+}
+
+html[data-accent] .to-cyan-400 {
+  --tw-gradient-to: rgb(var(--accent-rgb)) var(--tw-gradient-to-position) !important;
 }
 
 @theme inline {
@@ -22,16 +195,22 @@ body {
   font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
 }
 
-/* Smooth scrolling */
+/* Fast smooth scrolling */
 html {
   scroll-behavior: smooth;
 }
 
-/* Scroll animations */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Simplified scroll animations - faster */
 .animate-in {
   opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  transform: translateY(20px);
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
 }
 
 .animate-in.show {
@@ -42,7 +221,7 @@ html {
 .animate-in-left {
   opacity: 0;
   transform: translateX(-30px);
-  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .animate-in-left.show {
@@ -53,12 +232,88 @@ html {
 .animate-in-right {
   opacity: 0;
   transform: translateX(30px);
-  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .animate-in-right.show {
   opacity: 1;
   transform: translateX(0);
+}
+
+.animate-in-scale {
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.animate-in-scale.show {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Stagger animation delays */
+.animate-in-stagger-1 { transition-delay: 100ms; }
+.animate-in-stagger-2 { transition-delay: 200ms; }
+.animate-in-stagger-3 { transition-delay: 300ms; }
+.animate-in-stagger-4 { transition-delay: 400ms; }
+.animate-in-stagger-5 { transition-delay: 500ms; }
+.animate-in-stagger-6 { transition-delay: 600ms; }
+
+/* Micro-interactions */
+.ripple {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(34, 211, 211, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease, height 0.6s ease;
+}
+
+.ripple:active::after {
+  width: 300px;
+  height: 300px;
+}
+
+.pulse-on-hover {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.pulse-on-hover:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 20px rgba(34, 211, 211, 0.2);
+}
+
+.glow-on-hover {
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.glow-on-hover:hover {
+  box-shadow: 0 0 30px rgba(34, 211, 211, 0.3);
+  border-color: rgba(34, 211, 211, 0.5);
+}
+
+/* Button press effect */
+.press-effect {
+  transition: transform 0.1s ease;
+}
+
+.press-effect:active {
+  transform: scale(0.95);
+}
+
+/* Parallax sections */
+.parallax-slow {
+  will-change: transform;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* Glassmorphism effect */
@@ -91,6 +346,35 @@ html {
     min-height: 44px;
     min-width: 44px;
   }
+}
+
+/* Utility classes for theme */
+.text-accent {
+  color: rgb(var(--accent-rgb));
+}
+
+.bg-accent {
+  background-color: rgb(var(--accent-rgb));
+}
+
+.border-accent {
+  border-color: rgb(var(--accent-rgb));
+}
+
+.bg-primary {
+  background-color: var(--bg-primary);
+}
+
+.bg-secondary {
+  background-color: var(--bg-secondary);
+}
+
+.text-primary {
+  color: var(--text-primary);
+}
+
+.text-secondary {
+  color: var(--text-secondary);
 }
 
 /* ==================== STANDARDIZED BUTTON & ICON STYLES ==================== */
@@ -237,4 +521,3 @@ html {
   background-size: 200% 200%;
   animation: gradient-shift 15s ease infinite;
 }
-
