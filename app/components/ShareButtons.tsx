@@ -1,7 +1,7 @@
 'use client';
 
 import { Share2, Twitter, Linkedin, Facebook, Link2, Check } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 
 interface ShareButtonsProps {
   title?: string;
@@ -12,20 +12,28 @@ interface ShareButtonsProps {
 export default function ShareButtons({ 
   title = "Check out Ronak Neema's Portfolio",
   text = "Amazing terminal-themed portfolio by a DevOps Engineer & Full Stack Developer",
-  url = typeof window !== 'undefined' ? window.location.href : ''
+  url,
 }: ShareButtonsProps) {
   const [copied, setCopied] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
+  const [urlState, setUrlState] = useState('');
 
-  const shareLinks = {
-    twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`,
-    linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`,
-    facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
-  };
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setUrlState(url || window.location.href);
+    }
+  }, [url]);
+
+  const shareLinks = useMemo(() => ({
+    twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(urlState)}`,
+    linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(urlState)}`,
+    facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(urlState)}`,
+  }), [text, urlState]);
 
   const copyLink = async () => {
     try {
-      await navigator.clipboard.writeText(url);
+      const toCopy = urlState || (typeof window !== 'undefined' ? window.location.href : '');
+      await navigator.clipboard.writeText(toCopy);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
@@ -34,9 +42,10 @@ export default function ShareButtons({
   };
 
   const nativeShare = async () => {
+    const toShare = urlState || (typeof window !== 'undefined' ? window.location.href : '');
     if (navigator.share) {
       try {
-        await navigator.share({ title, text, url });
+        await navigator.share({ title, text, url: toShare });
       } catch (err) {
         console.error('Share failed:', err);
       }

@@ -46,7 +46,7 @@ export default function Navigation() {
     { href: '#about', label: './about' },
     { href: '#journey', label: './journey' },
     { href: '#skills', label: './skills' },
-    { href: '#github-stats', label: './github' },
+    // { href: '#github-stats', label: './github' },
     { href: '#contact', label: './contact' },
   ];
 
